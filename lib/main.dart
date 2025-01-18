@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:socially_app/views/responsive/mobile_layout.dart';
+import 'package:socially_app/views/responsive/responsive_layout.dart';
+import 'package:socially_app/views/responsive/web_layout.dart';
 
 import 'firebase_options.dart';
 
@@ -18,10 +21,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Socially"),
-        ),
+      home: ResponsiveLayout(
+        mobileScreenLayout: MobileScreenLayout(),
+        webScreenLayout: WebScreenLayout(),
       ),
     );
   }
