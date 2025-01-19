@@ -18,10 +18,19 @@ class CustomButton extends StatelessWidget {
       width: width,
       height: 50,
       decoration: BoxDecoration(
-         gradient: gradientColor,
+        gradient: gradientColor,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: TextButton(onPressed: onPressed, child: Text(text, style: TextStyle(fontSize: 16, color: mainWhiteColor),),),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            color: mainWhiteColor,
+          ),
+        ),
+      ),
     );
   }
 }

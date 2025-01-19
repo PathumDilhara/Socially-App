@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:socially_app/views/responsive/mobile_layout.dart';
-import 'package:socially_app/views/responsive/responsive_layout.dart';
-import 'package:socially_app/views/responsive/web_layout.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:socially_app/router/router_class.dart';
+import 'package:socially_app/utils/constants/colors.dart';
 
 import 'firebase_options.dart';
 
@@ -19,12 +19,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: ResponsiveLayout(
-        mobileScreenLayout: MobileScreenLayout(),
-        webScreenLayout: WebScreenLayout(),
+      theme: ThemeData(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        brightness: Brightness.dark,
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.transparent,
+          selectedItemColor: mainOrangeColor,
+          unselectedItemColor: mainWhiteColor,
+        ),
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: mainOrangeColor,
+          contentTextStyle: TextStyle(
+            fontSize: 16,
+            color: mainWhiteColor,
+          ),
+        ),
       ),
+      routerConfig: RouterClass().router
     );
   }
 }
