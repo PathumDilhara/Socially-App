@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
@@ -24,6 +26,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   File? _imageFile; // to store image for temporarily
 
+  Future<void> _imagePicker(ImageSource source) async {
+    final _picker = ImagePicker();
+    final _pickedImage = await _picker.pickImage(source: source);
+    if (_pickedImage != null) {
+      setState(() {
+        _imageFile = File(_pickedImage.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +50,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               Image.asset(
                 "assets/logo.png",
-                height: 60,
+                height: 68,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.06,
@@ -67,7 +79,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             left: 80,
                             child: IconButton(
                               onPressed: () {
-                                //TODO: Pick Image
+                                _imagePicker(ImageSource.gallery);
                               },
                               icon: Icon(
                                 Icons.add_a_photo,
@@ -189,7 +201,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
 
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).go("/login");
+                      },
                       child: Text(
                         "Already have an account? log in",
                         style: TextStyle(

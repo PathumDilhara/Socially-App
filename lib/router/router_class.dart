@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socially_app/views/auth_view/login_page.dart';
 import 'package:socially_app/views/auth_view/registration_page.dart';
 import 'package:socially_app/views/responsive/mobile_layout.dart';
 import 'package:socially_app/views/responsive/responsive_layout.dart';
@@ -7,7 +8,7 @@ import 'package:socially_app/views/responsive/web_layout.dart';
 
 class RouterClass {
   final router = GoRouter(
-    initialLocation: "/register",
+    initialLocation: "/login",
     errorPageBuilder: (context, state) => errorPage(),
     routes: [
       // initial route
@@ -25,6 +26,13 @@ class RouterClass {
         name: "register",
         path: "/register",
         builder: (context, state) => RegistrationPage(),
+      ),
+
+      // Login page
+      GoRoute(
+        name: "login",
+        path: "/login",
+        builder: (context, state) => LoginPage(),
       ),
     ],
   );
