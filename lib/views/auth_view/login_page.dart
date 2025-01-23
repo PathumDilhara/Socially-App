@@ -1,23 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socially_app/services/auth/auth%20_services.dart';
 import 'package:socially_app/utils/constants/colors.dart';
+import 'package:socially_app/widgets/custom_snackbar.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signInWithEmailAndPassword(BuildContext context) async {
+    try {
+      await AuthService().signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+        context: context,
+      );
+
+      //show snackbar
+      if (context.mounted) {
+        customSnackBar(
+          content: "User sign in successfully",
+          color: mainOrangeColor,
+          context: context,
+        );
+      }
+
+      if (context.mounted) {
+        GoRouter.of(context).go("/main");
+      }
+    } catch (err) {
+      print(err.toString());
+      //show snackbar
+      if (context.mounted) {
+        customSnackBar(
+          content: "User sign in failed",
+          color: Colors.redAccent,
+          context: context,
+        );
+      }
+    }
+  }
+
+  // Sign in with google
+  Future<void> _signInWithGoogle(BuildContext context) async {
+    try {
+     await AuthService().signInWithGoogle();
+
+      //show snackbar
+      if (context.mounted) {
+        customSnackBar(
+          content: "User sign in successfully",
+          color: mainOrangeColor,
+          context: context,
+        );
+      }
+
+      if (context.mounted) {
+        GoRouter.of(context).go("/main");
+      }
+    } catch (err) {
+      print(err.toString());
+      if (context.mounted) {
+        customSnackBar(
+          content: "User sign in failed",
+          color: Colors.redAccent,
+          context: context,
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController();
     return Scaffold(
         body: SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 40,
@@ -73,8 +139,12 @@ class LoginPage extends StatelessWidget {
                   CustomButton(
                     text: "Log in",
                     width: MediaQuery.of(context).size.width,
-                    onPressed: () {
-                      // TODO : Log in method
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        await _signInWithEmailAndPassword(context);
+                        _emailController.clear();
+                        _passwordController.clear();
+                      }
                     },
                   ),
                   SizedBox(
@@ -95,9 +165,7 @@ class LoginPage extends StatelessWidget {
                   CustomButton(
                     text: "Sign in with Google",
                     width: MediaQuery.of(context).size.width,
-                    onPressed: () {
-                      // TODO : Google log in
-                    },
+                    onPressed: () => _signInWithGoogle(context),
                   ),
                   SizedBox(
                     height: 16,

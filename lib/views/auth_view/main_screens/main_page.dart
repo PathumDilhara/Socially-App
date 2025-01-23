@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socially_app/services/auth/auth%20_services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -10,6 +11,15 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Center(
+        child: TextButton(
+          onPressed: () {
+            AuthService().signOut();
+          },
+          child: Text("Logout"),
+        ),
+      ),
+    );
   }
 }

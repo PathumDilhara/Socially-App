@@ -7,6 +7,10 @@ import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
 
+import '../../models/user_model.dart';
+import '../../services/auth/user_storage.dart';
+import '../../services/users/user_services.dart';
+
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
@@ -33,6 +37,51 @@ class _RegistrationPageState extends State<RegistrationPage> {
       setState(() {
         _imageFile = File(_pickedImage.path);
       });
+    }
+  }
+
+  Future<void> _createUser(BuildContext context)async{
+    try {
+      // store the user image in storage and get the download url
+      if (_imageFile != null) {
+        final imageUrl = await UserProfileStorageService().uploadImage(
+          profileImage: _imageFile!,
+          userEmail: _emailController.text,
+        );
+        _imageUrlController.text = imageUrl;
+      }
+
+      //save user to firestore
+      UserService().saveUser(
+        UserModel(
+          userId: "",
+          name: _nameController.text,
+          email: _emailController.text,
+          jobTitle: _jobTitleController.text,
+          imageUrl: _imageUrlController.text,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          password: _passwordController.text,
+          noOfFollowers: 0,
+        ),
+      );
+
+      //show snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('User created successfully'),
+        ),
+      );
+
+      GoRouter.of(context).go('/main'); // main-screen
+    } catch (e) {
+      print('Error signing up with email and password: $e');
+      //show snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error signing up with email and password: $e'),
+        ),
+      );
     }
   }
 
@@ -192,8 +241,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     CustomButton(
                       text: "Sign Up",
                       width: MediaQuery.of(context).size.width,
-                      onPressed: () {
-                        // TODO : register logic
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          await _createUser(context);
+                        }
                       },
                     ),
                     SizedBox(
