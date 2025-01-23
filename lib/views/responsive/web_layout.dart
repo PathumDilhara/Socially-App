@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/views/auth_view/login_page.dart';
-import 'package:socially_app/views/auth_view/main_screens/main_page.dart';
+
+import '../main_screens/main_page.dart';
 
 class WebScreenLayout extends StatelessWidget {
   const WebScreenLayout({super.key});
