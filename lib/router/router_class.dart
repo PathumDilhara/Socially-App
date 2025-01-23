@@ -6,7 +6,7 @@ import 'package:socially_app/views/responsive/mobile_layout.dart';
 import 'package:socially_app/views/responsive/responsive_layout.dart';
 import 'package:socially_app/views/responsive/web_layout.dart';
 
-import '../views/main_screens/main_page.dart';
+import '../views/main_page.dart';
 
 class RouterClass {
   final router = GoRouter(

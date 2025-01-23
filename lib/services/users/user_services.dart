@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/user_model.dart';
-import '../auth/auth _services.dart';
+import '../auth/auth_services.dart';
 
 class UserService {
   // Create a collection reference

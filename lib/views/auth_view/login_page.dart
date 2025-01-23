@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:socially_app/services/auth/auth%20_services.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/widgets/custom_snackbar.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
+
+import '../../services/auth/auth_services.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
