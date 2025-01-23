@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:socially_app/models/user_model.dart';
 import 'package:socially_app/widgets/custom_snackbar.dart';
 
 import '../exceptions/exceptions.dart';
@@ -85,6 +87,59 @@ class AuthService {
         color: Colors.redAccent,
         context: context,
       );
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // if null simply return/exit
+      if (googleUser == null) {
+        return;
+      }
+
+      // if not null get user details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // create new credential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      // sign in to firebase with the google auth credential
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // get the user
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        UserModel newUser = UserModel(
+          userId: user.uid,
+          name: user.displayName ?? "No name",
+          email: user.email ?? "No email",
+          jobTitle: "jobTitle",
+          imageUrl: user.photoURL ?? "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          password: "", // handle by google acc
+          noOfFollowers: 0,
+        );
+
+        // Save user to firestore
+        final DocumentReference reference =
+            FirebaseFirestore.instance.collection("users").doc(user.uid);
+
+        await reference.set(newUser.toJson());
+        
+        print("User data saved in firestore successfully under google sign in");
+      }
+    } on FirebaseAuthException catch (err) {
+      throw Exception(mapFirebaseAuthExceptionCode(err.code));
+    } catch (err) {
+      print("Error : $err");
     }
   }
 }
