@@ -139,7 +139,7 @@ class AuthService {
     } on FirebaseAuthException catch (err) {
       throw Exception(mapFirebaseAuthExceptionCode(err.code));
     } catch (err) {
-      print("Error : $err");
+      print("############################### Error : $err");
     }
   }
 }
