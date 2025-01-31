@@ -54,4 +54,75 @@ class FeedServices {
       }).toList();
     });
   }
+
+  // create a method to like a post
+  Future<void> likePost({
+    required String postId,
+    required String userId,
+  }) async {
+    final DocumentReference postLikeRef =
+        _feedsCollection.doc(postId).collection("likes").doc(userId);
+
+    try {
+      // Add a document to the likes sub collection(don't need a model always)
+      await postLikeRef.set({"LikedAt": Timestamp.now()});
+
+      // update the likes count in the post document
+      final DocumentSnapshot postDoc = await _feedsCollection.doc(postId).get();
+      final PostModel post =
+          PostModel.fromJson(postDoc.data() as Map<String, dynamic>);
+
+      final int newNoOfLikes = post.noOfLikes + 1;
+      // Update the doc
+      await _feedsCollection.doc(postId).update({"noOfLikes": newNoOfLikes});
+      print("######################### Post liked successfully");
+    } catch (err) {
+      print("Error like post : $err");
+    }
+  }
+
+  // create a method to dis like a post
+  Future<void> disLikePost({
+    required String postId,
+    required String userId,
+  }) async {
+    final DocumentReference postLikeRef =
+        _feedsCollection.doc(postId).collection("likes").doc(userId);
+
+    try {
+      // delete the document from the likes sub collection
+      await postLikeRef.delete();
+
+      // update the likes count in the post document
+      final DocumentSnapshot postDoc = await _feedsCollection.doc(postId).get();
+      final PostModel post =
+          PostModel.fromJson(postDoc.data() as Map<String, dynamic>);
+
+      final int newNoOfLikes = post.noOfLikes - 1;
+      // Update the doc
+      await _feedsCollection.doc(postId).update({"noOfLikes": newNoOfLikes});
+      print("######################### Post liked successfully");
+    } catch (err) {
+      print("Error like post : $err");
+    }
+  }
+
+  // Check if the user liked a the post
+  Future<bool> hasUserLikedPost({
+    required String postId,
+    required String userId,
+  }) async {
+    try {
+      final DocumentReference postLikeRef =
+          _feedsCollection.doc(postId).collection("likes").doc(userId);
+
+      final DocumentSnapshot doc = await postLikeRef.get();
+      print("################################@@@@@@@@@@@@@@@@@ ${doc.exists}");
+      return doc.exists;
+    } catch (err) {
+      print(
+          "############################# Error checking user liked or not $err");
+      return false;
+    }
+  }
 }
