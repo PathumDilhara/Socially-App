@@ -29,4 +29,13 @@ class FeedStorage {
       return "";
     }
   }
+
+  // Delete post image from storage
+  Future<void> deletePostImage({required String imageUrl}) async{
+    try{
+      await _firebaseStorage.refFromURL(imageUrl).delete();
+    } catch(err){
+      print("####################### error delting image from cloud $err");
+    }
+  }
 }

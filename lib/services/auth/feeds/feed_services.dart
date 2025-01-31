@@ -125,4 +125,20 @@ class FeedServices {
       return false;
     }
   }
+
+  // Delete a post from the firebase database
+  Future<void> deletePost({
+    required String postId,
+    required String postUrl,
+  }) async {
+    try{
+      // delete the image from cloud storage
+      await FeedStorage().deletePostImage(imageUrl: postUrl);
+
+      // Delete the firebase document
+      await _feedsCollection.doc(postId).delete();
+    } catch(err){
+      print("################### Error deleting pst from firestore $err");
+    }
+  }
 }
