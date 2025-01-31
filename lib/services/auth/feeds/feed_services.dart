@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:socially_app/models/post_model.dart';
 import 'package:socially_app/services/auth/feeds/feed_storage.dart';
 import 'package:socially_app/utils/functions/moods.dart';
@@ -40,10 +39,19 @@ class FeedServices {
       await _feedsCollection
           .add(newPost.toJson())
           .then((docRef) => docRef.update({"postId": docRef.id}));
-      
+
       print("#################### post saved");
     } catch (err) {
       print("Error saving post : $err");
     }
+  }
+
+  // fetch the post as a stream
+  Stream<List<PostModel>> getPostStream() {
+    return _feedsCollection.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return PostModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+    });
   }
 }

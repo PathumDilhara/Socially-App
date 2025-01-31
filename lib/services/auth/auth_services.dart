@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:socially_app/models/user_model.dart';
-import 'package:socially_app/widgets/custom_snackbar.dart';
+import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
 
 import '../exceptions/exceptions.dart';
 
