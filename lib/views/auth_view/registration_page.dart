@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
+import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
 
 import '../../models/user_model.dart';
 import '../../services/auth/user_storage.dart';
@@ -40,7 +41,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     }
   }
 
-  Future<void> _createUser(BuildContext context)async{
+  Future<void> _createUser(BuildContext context) async {
     try {
       // store the user image in storage and get the download url
       if (_imageFile != null) {
@@ -67,21 +68,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
       );
 
       //show snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('User created successfully'),
-        ),
-      );
-
-      GoRouter.of(context).go('/main'); // main-screen
+      if (context.mounted) {
+        customSnackBar(
+            content: "User created successfully",
+            color: mainOrangeColor,
+            context: context);
+      }
+      if (context.mounted) {
+        GoRouter.of(context).go('/main'); // main-screen
+      }
     } catch (e) {
       print('Error signing up with email and password: $e');
       //show snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error signing up with email and password: $e'),
-        ),
-      );
+      if (context.mounted) {
+        customSnackBar(
+            content: "Error signing up with email and password: $e",
+            color: Colors.redAccent,
+            context: context);
+      }
     }
   }
 

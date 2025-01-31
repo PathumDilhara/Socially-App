@@ -44,4 +44,20 @@ class UserService {
       print('Error saving user: $error');
     }
   }
+
+  // get user details by id
+  Future<UserModel?> getUserDetailsById({required String userId})async{
+    try{
+      final DocumentSnapshot doc = await _usersCollection.doc(userId).get();
+      print("################################ doc ${doc.id}, $userId");
+
+      if(doc.exists){
+        return UserModel.fromJson(doc.data() as Map<String, dynamic>);
+      }
+    } catch(err){
+      print("################################# getUserDetailsById ${err.toString()}");
+      return null;
+    }
+    return null;
+  }
 }

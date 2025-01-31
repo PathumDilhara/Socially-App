@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:socially_app/utils/constants/colors.dart';
-import 'package:socially_app/widgets/custom_snackbar.dart';
+import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
 

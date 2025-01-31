@@ -13,7 +13,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 0;
+  int _currentIndex = 3;
 
   final List<Widget> pages = [
     FeedScreen(),
@@ -69,7 +69,9 @@ class _MainPageState extends State<MainPage> {
           });
           print(_currentIndex);
         },
+        currentIndex: _currentIndex,
       ),
+      body: pages[_currentIndex],
     );
   }
 }
