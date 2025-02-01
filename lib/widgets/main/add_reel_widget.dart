@@ -1,9 +1,16 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:socially_app/models/user_model.dart';
+import 'package:socially_app/services/reels/reel_service.dart';
+import 'package:socially_app/services/reels/reel_storage_service.dart';
+import 'package:socially_app/services/users/user_services.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/widgets/reusable/custom_button.dart';
+import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
 
 class AddReelWidget extends StatefulWidget {
   const AddReelWidget({super.key});
@@ -24,7 +31,65 @@ class _AddReelWidgetState extends State<AddReelWidget> {
 
     final pickedVideoFile = await picker.pickVideo(source: ImageSource.gallery);
     if (pickedVideoFile != null) {
-      _videoFile = File(pickedVideoFile.path);
+      setState(() {
+        _videoFile = File(pickedVideoFile.path);
+      });
+    }
+  }
+
+  // upload video
+  void _submitReel() async {
+    if (_videoFile != null && _captionController.text.isNotEmpty) {
+      try {
+        // loading
+        setState(() {
+          _isUploading = true;
+        });
+
+        // don't allow web users to create reel
+        if (kIsWeb) {
+          return;
+        }
+
+        // upload video to cloud storage
+        final String videoUrl = await ReelStorageService().uploadVideo(
+            videoFile: _videoFile!,
+            userId: FirebaseAuth.instance.currentUser!.uid);
+
+        // get userDetails
+        final UserModel? userData = await UserService()
+            .getUserDetailsById(userId: FirebaseAuth.instance.currentUser!.uid);
+        // Create reelDetails Map to pass to save
+        final Map<String, dynamic> reelDetails = {
+          "caption": _captionController.text,
+          "videoUrl": videoUrl,
+          "userId": FirebaseAuth.instance.currentUser!.uid,
+          "userName": userData?.name,
+          "profileImageUrl": userData?.imageUrl,
+        };
+
+        await ReelServices().saveReel(reelDetails);
+
+        if (mounted) {
+          Navigator.of(context).pop();
+          customSnackBar(
+              content: "Reel uploaded",
+              color: mainOrangeColor,
+              context: context);
+        }
+      } catch (err) {
+        print("#################### Error uploading reel $err");
+        if (mounted) {
+          customSnackBar(
+              content: "Failed to upload reel",
+              color: mainOrangeColor,
+              context: context);
+        }
+      } finally {
+        setState(() {
+          _isUploading = false;
+        });
+      }
     }
   }
 
@@ -82,11 +147,13 @@ class _AddReelWidgetState extends State<AddReelWidget> {
                 height: 16,
               ),
               CustomButton(
-                text: "Upload Reel",
+                text: kIsWeb
+                    ? "Web not supported"
+                    : _isUploading
+                        ? "Uploading..."
+                        : "Upload Reel",
                 width: double.infinity,
-                onPressed: () {
-                  // TODO
-                },
+                onPressed: _submitReel,
               ),
             ],
           ),
