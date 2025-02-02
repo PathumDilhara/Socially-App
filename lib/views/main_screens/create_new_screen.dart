@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:socially_app/services/auth/feeds/feed_services.dart';
 import 'package:socially_app/services/users/user_services.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/utils/functions/moods.dart';
@@ -13,6 +12,7 @@ import 'package:socially_app/widgets/reusable/custom_button.dart';
 import 'package:socially_app/widgets/reusable/custom_input.dart';
 
 import '../../models/user_model.dart';
+import '../../services/feeds/feed_services.dart';
 
 class CreateNewScreen extends StatefulWidget {
   const CreateNewScreen({super.key});

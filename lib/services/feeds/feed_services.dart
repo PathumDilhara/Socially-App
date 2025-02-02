@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:socially_app/models/post_model.dart';
-import 'package:socially_app/services/auth/feeds/feed_storage.dart';
 import 'package:socially_app/utils/functions/moods.dart';
+
+import 'feed_storage.dart';
 
 class FeedServices {
   final CollectionReference _feedsCollection =
@@ -131,14 +132,33 @@ class FeedServices {
     required String postId,
     required String postUrl,
   }) async {
-    try{
+    try {
       // delete the image from cloud storage
       await FeedStorage().deletePostImage(imageUrl: postUrl);
 
       // Delete the firebase document
       await _feedsCollection.doc(postId).delete();
-    } catch(err){
+    } catch (err) {
       print("################### Error deleting pst from firestore $err");
+    }
+  }
+
+  // get all posts images from the user
+  Future<List<String>> getAllUsersPostImages({required String userId}) async {
+    try {
+      final userPosts = await _feedsCollection
+          .where("userId", isEqualTo: userId)
+          .get()
+          .then((snapshot) {
+        return snapshot.docs.map((doc) {
+          return PostModel.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+      });
+
+      return userPosts.map((post) => post.postURL).toList();
+    } catch (err) {
+      print("################ Error fetching all post images");
+      return [];
     }
   }
 }

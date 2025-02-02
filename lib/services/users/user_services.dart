@@ -74,4 +74,114 @@ class UserService {
       return [];
     }
   }
+
+  // Method follow user & update the user followers counter
+  Future<void> followUser({
+    required String currentUserId,
+    required String userToFollowId,
+  }) async {
+    try {
+      await _usersCollection
+          .doc(userToFollowId)
+          .collection("followers")
+          .doc(currentUserId)
+          .set({"FollowedAt": Timestamp.now()});
+
+      // update following count for the followed user
+      final followedUserRef = _usersCollection.doc(userToFollowId);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final followedUserDoc = await transaction.get(followedUserRef);
+
+        if (followedUserDoc.exists) {
+          final data = followedUserDoc.data() as Map<String, dynamic>;
+          final currentFollowersCount = data['followersCount'] ?? 0;
+          transaction.update(
+              followedUserRef, {"followersCount": currentFollowersCount + 1});
+        }
+      });
+
+      // update the following count for the current user
+      final currentUserRef = _usersCollection.doc(currentUserId);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final currentUserDoc = await transaction.get(currentUserRef);
+
+        if (currentUserDoc.exists) {
+          final data = currentUserDoc.data() as Map<String, dynamic>;
+          final currentFollowingCount = data['followingCount'] ?? 0;
+          transaction.update(
+              currentUserRef, {"followingCount": currentFollowingCount + 1});
+        }
+      });
+
+      print('"####################### User successfully follow');
+    } catch (err) {
+      print("############################### Error following user $err");
+    }
+  }
+
+  // Method to unfollow user & update the user followers count
+  Future<void> unfollowUser({
+    required String currentUserId,
+    required String userToUnfollowId,
+  }) async {
+    try {
+      // remove the user from the followers collection
+      await _usersCollection
+          .doc(userToUnfollowId)
+          .collection("followers")
+          .doc(currentUserId)
+          .delete();
+
+      // Update the followers count for the unfollowed user
+      final unfollowedUserRef = _usersCollection.doc(userToUnfollowId);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final unfollowedUserDoc = await transaction.get(unfollowedUserRef);
+
+        if (unfollowedUserDoc.exists) {
+          final data = unfollowedUserDoc.data() as Map<String, dynamic>;
+
+          final currentCount = data["followersCount"] ?? 0;
+          transaction
+              .update(unfollowedUserRef, {"followersCount": currentCount - 1});
+        }
+      });
+
+      // update following count for the current user
+      final currentUserRef = _usersCollection.doc(currentUserId);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final currentUserDoc = await transaction.get(currentUserRef);
+
+        if (currentUserDoc.exists) {
+          final data = currentUserDoc.data() as Map<String, dynamic>;
+
+          final currentCount = data["followingCount"] ?? 0;
+          transaction
+              .update(unfollowedUserRef, {"followingCount": currentCount - 1});
+        }
+      });
+
+      print("################# User unfollowed successfully");
+    } catch (err) {
+      print("############################# Failed to unfollow $err");
+    }
+  }
+
+  // Method to check if the current user is following another user
+  Future<bool> isFollowing({
+    required String currentUserId,
+    required String userToCheckId,
+  }) async {
+    try {
+      final docSnapshot = await _usersCollection
+          .doc(userToCheckId)
+          .collection("followers")
+          .doc(currentUserId)
+          .get();
+
+      return docSnapshot.exists;
+    } catch (err) {
+      print("################### Error checking user following or not $err");
+      return false;
+    }
+  }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:socially_app/models/post_model.dart';
-import 'package:socially_app/services/auth/feeds/feed_services.dart';
 import 'package:socially_app/utils/constants/colors.dart';
 import 'package:socially_app/utils/functions/moods.dart';
 import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
+
+import '../../services/feeds/feed_services.dart';
 
 class PostWidget extends StatefulWidget {
   final PostModel postModel;
