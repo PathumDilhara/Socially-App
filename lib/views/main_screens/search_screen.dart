@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socially_app/models/user_model.dart';
 import 'package:socially_app/services/users/user_services.dart';
 
@@ -36,6 +37,11 @@ class _SearchScreenState extends State<SearchScreen> {
           )
           .toList();
     });
+  }
+
+  // navigate to single user page
+  void _navigateToSingleUserPage(UserModel user) {
+    GoRouter.of(context).push("/singleUser", extra: user);
   }
 
   @override
@@ -86,7 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   title: Text(user.name),
                   subtitle: Text(user.jobTitle),
-                  onTap: () {}, // TODO
+                  onTap: () => _navigateToSingleUserPage(user),
                 );
               },
             ),
