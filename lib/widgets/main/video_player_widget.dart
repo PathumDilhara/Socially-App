@@ -66,9 +66,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return Stack(
       children: [
         _isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-              )
+            ? Center(
+              child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+            )
             : Center(
                 child: CircularProgressIndicator(
                   color: mainOrangeColor,
