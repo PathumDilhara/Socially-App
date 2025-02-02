@@ -9,7 +9,7 @@ import 'package:socially_app/widgets/reusable/custom_input.dart';
 import 'package:socially_app/widgets/reusable/custom_snackbar.dart';
 
 import '../../models/user_model.dart';
-import '../../services/auth/user_storage.dart';
+import '../../services/users/user_storage.dart';
 import '../../services/users/user_services.dart';
 
 class RegistrationPage extends StatefulWidget {

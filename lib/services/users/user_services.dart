@@ -184,4 +184,36 @@ class UserService {
       return false;
     }
   }
+
+  // get the count of followers for a user
+  Future<int> getUserFollowersCount (String userId)async{
+      try{
+        final doc = await _usersCollection.doc(userId).get();
+
+        if(doc.exists){
+          final data = doc.data() as Map<String, dynamic>;
+          return data["followersCount"] ?? 0;
+        }
+        return 0;
+      } catch(err) {
+        print("############## Error getting user followers count $err");
+        return 0;
+      }
+  }
+
+  // get the count of following for a user
+  Future<int> getUserFollowingCount (String userId)async{
+    try{
+      final doc = await _usersCollection.doc(userId).get();
+
+      if(doc.exists){
+        final data = doc.data() as Map<String, dynamic>;
+        return data["followingCount"] ?? 0;
+      }
+      return 0;
+    } catch(err) {
+      print("############## Error getting user following count $err");
+      return 0;
+    }
+  }
 }
