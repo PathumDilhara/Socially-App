@@ -46,18 +46,32 @@ class UserService {
   }
 
   // get user details by id
-  Future<UserModel?> getUserDetailsById({required String userId})async{
-    try{
+  Future<UserModel?> getUserDetailsById({required String userId}) async {
+    try {
       final DocumentSnapshot doc = await _usersCollection.doc(userId).get();
       print("################################ doc ${doc.id}, $userId");
 
-      if(doc.exists){
+      if (doc.exists) {
         return UserModel.fromJson(doc.data() as Map<String, dynamic>);
       }
-    } catch(err){
-      print("################################# getUserDetailsById ${err.toString()}");
+    } catch (err) {
+      print(
+          "################################# getUserDetailsById ${err.toString()}");
       return null;
     }
     return null;
+  }
+
+  // Get all users
+  Future<List<UserModel>> getAllUsers() async {
+    try {
+      final QuerySnapshot snapshot = await _usersCollection.get();
+      return snapshot.docs
+          .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (err) {
+      print("################## Error getting all users $err");
+      return [];
+    }
   }
 }
